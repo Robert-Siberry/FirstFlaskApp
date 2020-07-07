@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
@@ -8,9 +8,9 @@ from os import environ
 from forms import PostsForm
 
 app = Flask(__name__)
-
+#aac919961fe858a46dba9c060cf7fc12
 #make more secure
-app.config['SECRET_KEY']= 'aac919961fe858a46dba9c060cf7fc12'
+app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 #app.config['SLQALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@34.89.109.23:3306/posts'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -56,10 +56,21 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
-@app.route('/add')
+@app.route('/add', methods=['GET', 'POST'])
 def add():
     form = PostsForm()
-    return render_template('post.html', title='add a post', form=form)
+    if form.validate_on_submit():
+        post_data = Posts(
+            f_name=form.f_name.data,
+            l_name=form.l_name.data,
+            title=form.title.data,
+            content=form.content.data
+        )
+        db.session.add(post_data)
+        db.session.commit()
+        return redirect(url_for('home'))
+    else:
+        return render_template('post.html', title='add a post', form=form)
 
 @app.route('/create')
 def create():

@@ -5,6 +5,7 @@ from os import environ
 
 #my IP 77.100.120.192
 #token hex aac919961fe858a46dba9c060cf7fc12
+from forms import PostsForm
 
 app = Flask(__name__)
 
@@ -54,6 +55,11 @@ def home():
 @app.route('/about')
 def about():
     return render_template('about.html', title='About')
+
+@app.route('/add')
+def add():
+    form = PostsForm()
+    return render_template('post.html', title='add a post', form=form)
 
 @app.route('/create')
 def create():

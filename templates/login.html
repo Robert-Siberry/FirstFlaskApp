@@ -1,34 +1,10 @@
 {% extends 'layout.html' %}
 {% block body_content %}
-    <h1>Register Page</h1>
-    <p>Need an account? Sign up</p>
+    <h1>Log In</h1>
+    <p>Need an account? <a href="{{ url_for('register') }}">Sign Up!</a></p>
     <div class='form'>
         <form method='POST' action=''>
             {{ form.hidden_tag() }}
-                    <div class="form-group">
-                {{ form.f_name.label }}
-                {{ form.f_name }}
-                {% if form.f_name.errors %}
-                    <div class="error">
-                        {% for error in form.f_name.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-            <br>
-            <div class="form-group">
-                {{ form.l_name.label }}
-                {{ form.l_name }}
-                {% if form.l_name.errors %}
-                    <div class="error">
-                        {% for error in form.l_name.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-            <br>
             <div class='form_group'>
                 {{ form.email.label }}
                 {{ form.email }}
@@ -54,11 +30,11 @@
             </div>
             <br>
             <div class='form_group'>
-                {{ form.confirm_password.label }}
-                {{ form.confirm_password }}
-                {% if form.confirm_password.errors %}
+                {{ form.remember.label }}
+                {{ form.remember }}
+                {% if form.remember.errors %}
                     <div class='error'>
-                        {% for error in form.confirm_password.errors %}
+                        {% for error in form.remember.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>

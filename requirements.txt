@@ -8,3 +8,5 @@ Flask-WTF==0.14.3
 flask-bcrypt==0.7.1
 email_validator
 flask_bcrypt
+Flask-Login
+

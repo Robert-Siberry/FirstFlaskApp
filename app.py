@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from wtforms import ValidationError
-from forms import PostsForm, RegistrationForm, LoginForm
+from forms import PostsForm, RegistrationForm, LoginForm, UpdateAccountForm
 from flask_bcrypt import Bcrypt
 from flask_login import login_user, current_user, logout_user, login_required, UserMixin, LoginManager
 from datetime import datetime
@@ -42,11 +42,11 @@ class Posts(db.Model):
         )
 
 
-def validate_email(email):
-    user = Users.query.filter_by(email=email.data).first()
-
-    if user:
-        raise ValidationError('Email already in use')
+def validate_email(self, email):
+    if email.data != current_user.email:
+        user = Users.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Email already in use')
 
 
 class Users(db.Model, UserMixin):
@@ -104,6 +104,23 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
+@app.route('/account', methods=['GET', 'POST'])
+@login_required
+def account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.f_name = form.f_name.data
+        current_user.l_name = form.l_name.data
+        current_user.email = form.email.data
+        db.session.commit()
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        form.f_name.data = current_user.f_name
+        form.l_name.data = current_user.l_name
+        form.email.data = current_user.email
+    return render_template('account.html', title='Account', form=form)
+
+
 @app.route("/logout")
 def logout():
     logout_user()
@@ -140,7 +157,6 @@ def add():
 
 
 @app.route('/create')
-
 def create():
     db.drop_all()
     db.create_all()
